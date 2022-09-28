@@ -55,8 +55,8 @@ function SignUp() {
       formDataCopy.timestamp = serverTimestamp();
 
       await setDoc(doc(db, "users", user.uid), formDataCopy);
-
-      navigate("/");
+      navigate("/profile");
+      toast.success("Account Successfully Created");
     } catch (error) {
       toast.error("Something Went Wrong With Registration");
     }
