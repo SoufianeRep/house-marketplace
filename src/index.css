@@ -426,6 +426,14 @@ button {
   }
 }
 
+.listingDetailsHeader {
+  display: flex;
+}
+
+.listingDetailsHeader > a {
+  flex-grow: 0;
+}
+
 .categoryListingDetails {
   width: 65%;
 }

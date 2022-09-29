@@ -4,6 +4,13 @@ import { getDoc, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../firebase.config";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
+import "swiper/css/a11y";
 import Spinner from "../components/Spinner";
 import shareIcon from "../assets/svg/shareIcon.svg";
 import { formatPrice } from "../helpers/formatPrice";
@@ -35,8 +42,26 @@ export default function Listing() {
   }
 
   return (
-    <main>
-      {/* Slider */}
+    <main style={{ marginButtom: "4rem" }}>
+      <Swiper
+        modules={[Navigation, Pagination, Scrollbar, A11y]}
+        slidesPerView={1}
+        pagination={{ clickable: true }}
+        navigation
+        style={{ height: "300px" }}
+      >
+        {listing.imgUrls.map((url, index) => (
+          <SwiperSlide key={index}>
+            <div
+              style={{
+                background: `url(${listing.imgUrls[index]}) center no-repeat`,
+                backgroundSize: "cover",
+              }}
+              className="swiperSlideDiv"
+            ></div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
       <div
         className="shareIconDiv"
         onClick={() => {
@@ -51,6 +76,15 @@ export default function Listing() {
       </div>
 
       {shareLinkCopied && <p className="linkCopied">Link Copied!</p>}
+      {auth.currentUser?.uid !== listing.userRef && (
+        <Link
+          to={`/contact/${listing.userRef}?listingName=${listing.name}`}
+          className="primaryButton"
+          style={{ marginTop: "1rem" }}
+        >
+          Contact Landlord
+        </Link>
+      )}
 
       <div className="listingDetails">
         <p className="listingName">
@@ -59,6 +93,7 @@ export default function Listing() {
             ? formatPrice(listing.discountedPrice)
             : formatPrice(listing.regularPrice)}
         </p>
+
         <p className="listinLocation">{listing.location}</p>
         <p className="listingType">
           For {listing.type === "rent" ? "Rent" : "Sale"}
@@ -104,15 +139,6 @@ export default function Listing() {
             </Marker>
           </MapContainer>
         </div>
-
-        {auth.currentUser?.uid !== listing.userRef && (
-          <Link
-            to={`/contact/${listing.userRef}?listingName=${listing.name}`}
-            className="primaryButton"
-          >
-            Contact Landlord
-          </Link>
-        )}
       </div>
     </main>
   );
