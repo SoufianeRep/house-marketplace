@@ -57,6 +57,7 @@ export default function Category() {
 
     fetchListigns();
   }, [params.categoryName]);
+
   return (
     <div className="category">
       <header>
