@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Category from "./pages/Category";
 import Explore from "./pages/Explore";
 import ForgotPassword from "./pages/ForgotPassword";
 import Navbar from "./components/Navbar";
@@ -17,6 +18,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<Explore />} />
           <Route path="/offers" element={<Offers />} />
+          <Route path="/category/:categoryName" element={<Category />} />
           <Route path="/profile" element={<PrivateRoute />}>
             <Route path="/profile" element={<Profile />} />
           </Route>

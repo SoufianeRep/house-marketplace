@@ -30,7 +30,7 @@ export default function OAuth() {
       }
       navigate("/");
     } catch (error) {
-      console.log(error);
+      console.log(error.firebase);
       toast.error("Could not authorize with google");
     }
   };
