@@ -6,6 +6,7 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase.config";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
@@ -121,6 +122,7 @@ export default function CreateListing() {
       if (location === undefined || location.includes("undefined")) {
         setLoading(false);
         toast.error("Please enter a correct address");
+        return;
       }
     } else {
       geolocation.lat = latitude;
@@ -176,12 +178,25 @@ export default function CreateListing() {
     ).catch((error) => {
       setLoading(false);
       toast.error("Images not uploaded");
-      console.log("ERROR =>", error);
+      return;
     });
 
-    console.log("Image urls => ", imgUrls);
+    const formDataCopy = {
+      ...formData,
+      imgUrls,
+      geolocation,
+      timestamp: serverTimestamp(),
+    };
 
+    delete formDataCopy.address;
+    delete formDataCopy.images;
+    location && (formDataCopy.location = location);
+    !formDataCopy.offer && delete formDataCopy.discountedPrice;
+
+    const docRef = await addDoc(collection(db, "listings"), formDataCopy);
     setLoading(false);
+    toast.success("Listing Saved");
+    navigate(`/category/${formDataCopy.type}/${docRef.id}`);
   };
 
   if (loading) {
