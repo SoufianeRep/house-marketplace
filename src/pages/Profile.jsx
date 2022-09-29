@@ -4,6 +4,8 @@ import { db } from "../firebase.config";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import arrowRight from "../assets/svg/keyboardArrowRightIcon.svg";
+import homeIcon from "../assets/svg/homeIcon.svg";
 
 function Profile() {
   const auth = getAuth();
@@ -37,7 +39,6 @@ function Profile() {
         });
       }
     } catch (error) {
-      console.log(error);
       toast.error("Could not Update profile details");
     }
   };
@@ -89,6 +90,12 @@ function Profile() {
             />
           </form>
         </div>
+
+        <Link to="/create-listing" className="createListing">
+          <img src={homeIcon} alt="home icon" />
+          <p>Sell or Rent Your Property</p>
+          <img src={arrowRight} alt="arrow right" className="" />
+        </Link>
       </main>
     </div>
   );
