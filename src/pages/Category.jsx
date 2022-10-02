@@ -18,45 +18,67 @@ import Spinner from "../components/Spinner";
 export default function Category() {
   const [listings, setListings] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [lastFetchedListing, setLastFetchedListing] = useState(null);
 
   const params = useParams();
 
   useEffect(() => {
-    const fetchListigns = async () => {
-      try {
-        // Get reference
-        const listingsRef = collection(db, "listings");
+    fetchListings();
+  }, [params.categoryName]);
 
-        // Create a Query
-        const q = query(
+  const onFetchMoreListings = async () => {
+    fetchListings(true);
+  };
+
+  const fetchListings = async (fetchMore = false) => {
+    try {
+      // Get reference
+      const listingsRef = collection(db, "listings");
+
+      // Create a Query
+      let q;
+      if (fetchMore) {
+        q = query(
+          listingsRef,
+          where("type", "==", params.categoryName),
+          orderBy("timestamp", "desc"),
+          startAfter(lastFetchedListing),
+          limit(10)
+        );
+      } else {
+        q = query(
           listingsRef,
           where("type", "==", params.categoryName),
           orderBy("timestamp", "desc"),
           limit(10)
         );
-
-        // Execute the query
-        const querySnap = await getDocs(q);
-
-        const listings = [];
-
-        querySnap.forEach((doc) => {
-          listings.push({
-            id: doc.id,
-            data: doc.data(),
-          });
-        });
-
-        setListings(listings);
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-        toast.error("Could not fetch listing, Please contact the team");
       }
-    };
 
-    fetchListigns();
-  }, [params.categoryName]);
+      // Execute the query
+      const querySnap = await getDocs(q);
+      const lastVisible = querySnap.docs[querySnap.docs.length - 1];
+      setLastFetchedListing(lastVisible);
+
+      const listings = [];
+
+      querySnap.forEach((doc) => {
+        listings.push({
+          id: doc.id,
+          data: doc.data(),
+        });
+      });
+
+      if (fetchMore) {
+        setListings((prevState) => [...prevState, ...listings]);
+      } else {
+        setListings(listings);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      toast.error("Could not fetch listing, Please contact the team");
+    }
+  };
 
   return (
     <div className="category">
@@ -83,6 +105,14 @@ export default function Category() {
               ))}
             </ul>
           </main>
+
+          <br />
+          <br />
+          {lastFetchedListing && (
+            <p className="loadMore" onClick={onFetchMoreListings}>
+              Load More
+            </p>
+          )}
         </>
       ) : (
         <p>No listings for {params.categoryName}</p>
