@@ -24,6 +24,7 @@ export default function Category() {
 
   useEffect(() => {
     fetchListings();
+    //eslint-disable-next-line
   }, [params.categoryName]);
 
   const onFetchMoreListings = async () => {

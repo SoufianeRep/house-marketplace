@@ -9,7 +9,6 @@ import {
   where,
   orderBy,
   deleteDoc,
-  QuerySnapshot,
 } from "firebase/firestore";
 import { db } from "../firebase.config";
 import { useNavigate, Link } from "react-router-dom";

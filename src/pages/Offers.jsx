@@ -21,6 +21,7 @@ function Offers() {
 
   useEffect(() => {
     fetchListings();
+    //eslint-disable-next-line
   }, []);
 
   const onFetchMoreListings = () => {
