@@ -34,7 +34,7 @@ export default function Listing() {
         setLoading(false);
       }
     };
-    return fetchListing;
+    fetchListing();
   }, [navigate, params.listingId]);
 
   if (loading) {

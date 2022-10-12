@@ -54,7 +54,7 @@ function Profile() {
       setListings(listings);
       setLoading(false);
     };
-    return fetchUserListings;
+    fetchUserListings();
   }, [auth.currentUser.uid]);
 
   const onChange = (e) => {
